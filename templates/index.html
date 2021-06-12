@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Salary Predictor</title>
+    </head>
+    <body>
+        <h1>Salary Predictor Application</h1>
+        <form action="predict" method="POST">
+            <input type=number name="experience" placeholder="experience" required="required"/>
+            <input type=number name="test_score" placeholder="test score" required="required"/>
+            <input type=number name="interview_score" placeholder="interview score" required="required"/>
+            <button type="submit">Predict</button>
+        </form>
+        {{prediction_text}}
+    </body>
+</html>

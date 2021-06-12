@@ -3,31 +3,32 @@ import pandas as pd
 import joblib
 from sklearn.linear_model import LinearRegression
 
-dataset = pd.read_csv('hiring.csv')
+dataset = pd.read_csv(r"hiring.csv")
 print(dataset)
 
-dataset.experience.fillna(0 , inplace = True)
+# null value handling
+dataset['experience'].fillna(0,inplace=True)
+dataset['test_score'].fillna(dataset['test_score'].mean(),inplace=True)
 
-dataset.test_score.fillna(dataset.test_score.mean() , inplace = True)
-
-X = dataset.iloc[: , :3]
-
-def convert_to_int(word):
-    word_dic = {'one':1 , 'two':2 , "three":3 , "four":4 , 'five':5 , 'six':6 , "seven":7 , 'eight':8 , 'nine':9 , 'ten':10 , 'eleven':11 , 0:0}
+def encode_word(word):
+    word_dic ={0:0,'one':1,'two':2,'three':3,'four':4,'five':5,'six':6,'seven':7,'eight':8,'nine':9,'ten':10,'eleven':11}
     return word_dic[word]
 
-X['experience'] = X.experience.apply(lambda x : convert_to_int(x))
+# change the experience column from categorical to numerical
+dataset['experience'] = dataset['experience'].apply(lambda x :  encode_word(x))
+print(dataset)
 
-y = dataset.iloc[: , -1]
+# extract the predictor variables and target variables
+X = dataset.iloc[:,0:3]
+Y = dataset.iloc[:,-1]
 
+# modelling
+model = LinearRegression()
+model.fit(X,Y)
+print("Completed model training")
 
-regressor = LinearRegression()
+print("Training Score:" + str(model.score(X,Y)))
 
-regressor.fit(X,y)
-
-print('Model Training is done')
-
-joblib.dump(regressor , 'hiring_model.pkl',)
-
-
-print(regressor.predict([[1 , 8,9]]))
+print(model.predict([[1,8,9]]))
+#Saving the model using joblib
+joblib.dump(model,"hiring_model.pkl")
